@@ -1,26 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
+import UserCard from './components/UserCard';
+import CardList from './components/CardList';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      userData: [],
+      userFollowers: []
+    };
+  }
+
+  componentDidMount() {
+    fetch("https://api.github.com/users/daniel-hermansen")
+      .then(res => res.json())
+      .then(data => this.setState({ userData: data }))
+      .catch(err => console.log(err));
+  };
+
+  componentDidUpdate() {
+    fetch("https://api.github.com/users/daniel-hermansen/followers")
+      .then(res => res.json())
+      .then(data => this.setState({ userFollowers: data }))
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <h1>GitHub User Card</h1>
+        <UserCard userData = {this.state.userData}/>
+        <CardList userFollowers = {this.state.userFollowers}/>
+      </div>
+    );
+  }
 }
 
 export default App;
